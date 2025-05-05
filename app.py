@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
+import os
 
 st.set_page_config(page_title="Network Intrusion Detection Visualizer", layout="wide")
 st.title("Network Intrusion Detection Visualizer")
@@ -23,29 +24,28 @@ def generate_synthetic_logs(num_rows=100):
     }
     return pd.DataFrame(data)
 
-# Initialize synthetic_data in session state
 if 'synthetic_data' not in st.session_state:
     st.session_state.synthetic_data = None
 
-# Button to generate synthetic data
 if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
+    st.session_state.synthetic_data.to_csv("synthetic_logs.csv", index=False)
 
-# Display synthetic data and download button
 if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
     st.markdown("### Generated Synthetic Data")
     st.dataframe(data.head())
 
-    csv = data.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="Download Synthetic Logs as CSV",
-        data=csv,
-        file_name='synthetic_logs.csv',
-        mime='text/csv'
-    )
+    if os.path.exists("synthetic_logs.csv"):
+        with open("synthetic_logs.csv", "rb") as f:
+            st.download_button(
+                label="Download Synthetic Logs as CSV",
+                data=f,
+                file_name="synthetic_logs.csv",
+                mime="text/csv"
+            )
 
-# Upload a real file
+# File upload & model prediction
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
 
 if uploaded_file:
