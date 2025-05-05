@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="banner.png" alt="Network Intrusion Detection Visualizer Banner" width="100%">
+</p>
+
 # Network Intrusion Detection Visualizer
 
 A Streamlit app that detects network intrusions from uploaded `.csv` logs using a machine learning model.
