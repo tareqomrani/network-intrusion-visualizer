@@ -23,42 +23,43 @@ def generate_synthetic_logs(num_rows=100):
     }
     return pd.DataFrame(data)
 
-# Generate synthetic logs and store in session state
+# Initialize synthetic_data in session state
 if 'synthetic_data' not in st.session_state:
     st.session_state.synthetic_data = None
 
+# Button to generate synthetic data
 if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
 
-# Display and allow download of synthetic logs
+# Display synthetic data and download button
 if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
-    st.write("Generated Synthetic Data:", data.head())
+    st.markdown("### Generated Synthetic Data")
+    st.dataframe(data.head())
 
-    st.markdown("### Download Synthetic Logs")
     csv = data.to_csv(index=False).encode('utf-8')
     st.download_button(
-        label="Download as CSV",
+        label="Download Synthetic Logs as CSV",
         data=csv,
         file_name='synthetic_logs.csv',
         mime='text/csv'
     )
 
-# Upload and process user file
+# Upload a real file
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
 
 if uploaded_file:
     data = pd.read_csv(uploaded_file)
-    st.write("Uploaded Data Preview:", data.head())
+    st.markdown("### Uploaded Data Preview")
+    st.dataframe(data.head())
 
     model = joblib.load("model/ids_model.pkl")
-
-    # Assume preprocessing is already done in model training
     predictions = model.predict(data)
     data["Prediction"] = predictions
 
-    st.write("Prediction Results", data)
+    st.markdown("### Prediction Results")
+    st.dataframe(data)
 
-    attack_counts = data["Prediction"].value_counts()
     st.subheader("Attack Type Distribution")
+    attack_counts = data["Prediction"].value_counts()
     st.bar_chart(attack_counts)
