@@ -24,6 +24,7 @@ def generate_synthetic_logs(num_rows=100):
     }
     return pd.DataFrame(data)
 
+# Generate synthetic logs and save to disk
 if 'synthetic_data' not in st.session_state:
     st.session_state.synthetic_data = None
 
@@ -31,19 +32,21 @@ if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
     st.session_state.synthetic_data.to_csv("synthetic_logs.csv", index=False)
 
+# Display data and direct download link
 if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
     st.markdown("### Generated Synthetic Data")
     st.dataframe(data.head())
 
     if os.path.exists("synthetic_logs.csv"):
-        with open("synthetic_logs.csv", "rb") as f:
-            st.download_button(
-                label="Download Synthetic Logs as CSV",
-                data=f,
-                file_name="synthetic_logs.csv",
-                mime="text/csv"
-            )
+        st.markdown("### Download CSV File")
+        st.markdown(
+            '<a href="synthetic_logs.csv" download="synthetic_logs.csv" '
+            'style="padding: 10px 16px; background-color: #4CAF50; color: white; '
+            'border: none; border-radius: 5px; text-decoration: none;">'
+            'Download Synthetic Logs</a>',
+            unsafe_allow_html=True
+        )
 
 # File upload & model prediction
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
