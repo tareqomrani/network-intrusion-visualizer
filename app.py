@@ -23,12 +23,15 @@ def generate_synthetic_logs(num_rows=100):
     }
     return pd.DataFrame(data)
 
-# Button to generate synthetic logs
+# Generate synthetic logs and store in session state
+if 'synthetic_data' not in st.session_state:
+    st.session_state.synthetic_data = None
+
 if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
 
-# Display synthetic data and download button if available
-if 'synthetic_data' in st.session_state:
+# Display and allow download of synthetic logs
+if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
     st.write("Generated Synthetic Data:", data.head())
 
@@ -41,6 +44,7 @@ if 'synthetic_data' in st.session_state:
         mime='text/csv'
     )
 
+# Upload and process user file
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
 
 if uploaded_file:
