@@ -1,52 +1,57 @@
-<p align="center">
-  <img src="./banner.png" alt="Network Intrusion Detection Visualizer Banner" width="100%">
-</p>
-
 # Network Intrusion Detection Visualizer
 
-A Streamlit-based machine learning app for visualizing and detecting network intrusions using offline data and models.
+A Streamlit app that detects network intrusions from uploaded `.csv` logs using a machine learning model.
 
 ## Features
-- Upload and preview CSV network logs
-- Run predictions using a local ML model
-- Visualize attack type distribution with interactive charts
-- Offline and API-free setup
+- Generate or upload network traffic logs
+- Run predictions using a trained Random Forest model
+- Visualize attack vs normal classifications
+- Mobile-friendly layout and CSV output
+- Hosted via Streamlit Cloud
 
-## Installation
+## Demo
+[Try it on Streamlit Cloud](https://streamlit.io/cloud)
 
+## Getting Started
+
+### Clone the Repo
 ```bash
-git clone https://github.com/yourusername/network-intrusion-visualizer.git
+git clone https://github.com/your-username/network-intrusion-visualizer.git
 cd network-intrusion-visualizer
+```
+
+### Requirements
+Install dependencies:
+```bash
 pip install -r requirements.txt
+```
+
+### Run Locally
+```bash
 streamlit run app.py
 ```
 
-## Model
-Place your trained ML model (`ids_model.pkl`) in the `model/` directory. The model should be trained on preprocessed NSL-KDD or similar datasets.
+### Deploy on Streamlit Cloud
+1. Push this folder to a public GitHub repo
+2. Go to [streamlit.io/cloud](https://streamlit.io/cloud)
+3. Click **New app**, select your repo
+4. Set `app.py` as the entry point
+5. Deploy
 
-## Dataset
-Use offline datasets such as [NSL-KDD](https://www.unb.ca/cic/datasets/nsl.html). Place a test `.csv` file in the `data/` directory.
-
-## Folder Structure
+## File Structure
 ```
-nids-streamlit/
+network-intrusion-visualizer/
 ├── app.py
-├── requirements.txt
-├── README.md
 ├── model/
-│   └── ids_model.pkl  # Add your model here
-└── data/
-    └── NSL-KDD-test.csv  # Add your test data here
+│   └── ids_model.pkl
+├── sample_logs.csv
+├── requirements.txt
+└── README.md
 ```
 
-## Future Improvements
-- Add SHAP explainability for model transparency
-- Support real-time or batch packet simulation
-- Improve multi-class classification for diverse attacks
+## Notes
+- `ids_model.pkl` must exist in the `model/` folder for predictions to work.
+- For test logs, use the included `sample_logs.csv`.
 
 ## License
 MIT
-
-## Acknowledgements
-- NSL-KDD dataset by Canadian Institute for Cybersecurity
-- Built with Streamlit, scikit-learn, and pandas
