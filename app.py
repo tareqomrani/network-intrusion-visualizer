@@ -1,3 +1,21 @@
+import numpy as np
+
+def generate_synthetic_logs(num_rows=100):
+    protocols = ['tcp', 'udp', 'icmp']
+    services = ['http', 'ftp', 'smtp', 'dns']
+    flags = ['SF', 'S0', 'REJ', 'RSTO']
+
+    data = {
+        'duration': np.random.randint(0, 1000, size=num_rows),
+        'protocol_type': np.random.choice(protocols, size=num_rows),
+        'service': np.random.choice(services, size=num_rows),
+        'flag': np.random.choice(flags, size=num_rows),
+        'src_bytes': np.random.randint(0, 100000, size=num_rows),
+        'dst_bytes': np.random.randint(0, 100000, size=num_rows),
+        'label': np.random.choice(['normal', 'attack'], size=num_rows, p=[0.7, 0.3])
+    }
+    return pd.DataFrame(data)
+
 import streamlit as st
 import pandas as pd
 import joblib
@@ -7,6 +25,11 @@ st.set_page_config(page_title="Network Intrusion Detection Visualizer", layout="
 st.title("Network Intrusion Detection Visualizer")
 
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
+
+if st.button("Generate Synthetic Test Logs"):
+    data = generate_synthetic_logs(200)
+    st.write("Generated Synthetic Data:", data.head())
+
 
 if uploaded_file:
     data = pd.read_csv(uploaded_file)
