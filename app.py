@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
-import os
 
 st.set_page_config(page_title="Network Intrusion Detection Visualizer", layout="wide")
 st.title("Network Intrusion Detection Visualizer")
@@ -24,31 +23,31 @@ def generate_synthetic_logs(num_rows=100):
     }
     return pd.DataFrame(data)
 
-# Generate synthetic logs and save to disk
+# Generate synthetic logs
 if 'synthetic_data' not in st.session_state:
     st.session_state.synthetic_data = None
 
 if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
-    st.session_state.synthetic_data.to_csv("synthetic_logs.csv", index=False)
 
-# Display data and direct download link
+# Show data and allow copying CSV to clipboard
 if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
     st.markdown("### Generated Synthetic Data")
     st.dataframe(data.head())
 
-    if os.path.exists("synthetic_logs.csv"):
-        st.markdown("### Download CSV File")
-        st.markdown(
-            '<a href="synthetic_logs.csv" download="synthetic_logs.csv" '
-            'style="padding: 10px 16px; background-color: #4CAF50; color: white; '
-            'border: none; border-radius: 5px; text-decoration: none;">'
-            'Download Synthetic Logs</a>',
-            unsafe_allow_html=True
-        )
+    csv = data.to_csv(index=False)
+    st.markdown("### CSV Output (Tap to Copy on Mobile)")
+    st.code(csv, language='csv')
 
-# File upload & model prediction
+    st.markdown("""
+        <button onclick="navigator.clipboard.writeText(document.querySelector('code').innerText)"
+                style="padding: 10px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Copy CSV to Clipboard
+        </button>
+        """, unsafe_allow_html=True)
+
+# Upload file for prediction
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
 
 if uploaded_file:
