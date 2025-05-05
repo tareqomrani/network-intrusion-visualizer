@@ -1,9 +1,16 @@
 import joblib
 import base64
-from io import BytesIO
+import os
+from pathlib import Path
 
-# Base64-encoded model
-model_base64 = """<PASTE THE FULL BASE64 STRING HERE>"""
+# Write the embedded model to disk
+model_dir = Path("model")
+model_dir.mkdir(exist_ok=True)
+model_path = model_dir / "ids_model.pkl"
 
-model_bytes = base64.b64decode(model_base64)
-model = joblib.load(BytesIO(model_bytes))
+if not model_path.exists():
+    encoded = "gASVIwAAAAAAAACMCF9fbWFpbl9flIwPUHJldHJhaW5lZE1vZGVslJOUKYGULg=="
+    with open(model_path, "wb") as f:
+        f.write(base64.b64decode(encoded))
+
+model = joblib.load(model_path)
