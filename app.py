@@ -1,4 +1,11 @@
+import streamlit as st
+import pandas as pd
 import numpy as np
+import joblib
+import matplotlib.pyplot as plt
+
+st.set_page_config(page_title="Network Intrusion Detection Visualizer", layout="wide")
+st.title("Network Intrusion Detection Visualizer")
 
 def generate_synthetic_logs(num_rows=100):
     protocols = ['tcp', 'udp', 'icmp']
@@ -16,18 +23,13 @@ def generate_synthetic_logs(num_rows=100):
     }
     return pd.DataFrame(data)
 
-import streamlit as st
-import pandas as pd
-import joblib
-import matplotlib.pyplot as plt
-
-st.set_page_config(page_title="Network Intrusion Detection Visualizer", layout="wide")
-st.title("Network Intrusion Detection Visualizer")
-
-uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
-
+# Button to generate synthetic logs
 if st.button("Generate Synthetic Test Logs"):
-    data = generate_synthetic_logs(200)
+    st.session_state.synthetic_data = generate_synthetic_logs(200)
+
+# Display synthetic data and download button if available
+if 'synthetic_data' in st.session_state:
+    data = st.session_state.synthetic_data
     st.write("Generated Synthetic Data:", data.head())
 
     st.markdown("### Download Synthetic Logs")
@@ -36,11 +38,10 @@ if st.button("Generate Synthetic Test Logs"):
         label="Download as CSV",
         data=csv,
         file_name='synthetic_logs.csv',
-        mime='text/csv',
-        key='download-csv'
+        mime='text/csv'
     )
 
-
+uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
 
 if uploaded_file:
     data = pd.read_csv(uploaded_file)
