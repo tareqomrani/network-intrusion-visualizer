@@ -30,7 +30,7 @@ if 'synthetic_data' not in st.session_state:
 if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
 
-# Show data and working mobile-friendly copy feature
+# Display data and elegant copy section
 if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
     st.markdown("### Generated Synthetic Data")
@@ -38,21 +38,23 @@ if st.session_state.synthetic_data is not None:
 
     csv = data.to_csv(index=False)
 
-    # Render CSV text in a <textarea> with copy button
-    st.markdown("### Copy CSV (Mobile Friendly)")
+    st.markdown("### Copy CSV to Clipboard (Mobile-Friendly)")
+
     st.markdown(f"""
-        <textarea id="csvData" style="width:100%;height:200px;">{csv}</textarea>
-        <br>
-        <button onclick="copyCSV()" 
-            style="padding: 10px 16px; background-color: #4CAF50; color: white; 
-            border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
-            Copy to Clipboard
+        <div style="margin-bottom: 10px;">
+            <textarea id="csvTextArea" style="width: 100%; height: 200px; padding: 10px; font-family: monospace; font-size: 14px; border: 1px solid #ccc; border-radius: 5px;">{csv}</textarea>
+        </div>
+        <button onclick="copyCSVToClipboard()" 
+            style="background-color: #4CAF50; color: white; padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
+            Copy CSV
         </button>
         <script>
-        function copyCSV() {{
-            var copyText = document.getElementById("csvData");
+        function copyCSVToClipboard() {{
+            var copyText = document.getElementById("csvTextArea");
             copyText.select();
+            copyText.setSelectionRange(0, 99999); // For iOS
             document.execCommand("copy");
+            alert("CSV copied to clipboard!");
         }}
         </script>
     """, unsafe_allow_html=True)
