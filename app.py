@@ -30,22 +30,32 @@ if 'synthetic_data' not in st.session_state:
 if st.button("Generate Synthetic Test Logs"):
     st.session_state.synthetic_data = generate_synthetic_logs(200)
 
-# Show data and allow copying CSV to clipboard
+# Show data and working mobile-friendly copy feature
 if st.session_state.synthetic_data is not None:
     data = st.session_state.synthetic_data
     st.markdown("### Generated Synthetic Data")
     st.dataframe(data.head())
 
     csv = data.to_csv(index=False)
-    st.markdown("### CSV Output (Tap to Copy on Mobile)")
-    st.code(csv, language='csv')
 
-    st.markdown("""
-        <button onclick="navigator.clipboard.writeText(document.querySelector('code').innerText)"
-                style="padding: 10px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Copy CSV to Clipboard
+    # Render CSV text in a <textarea> with copy button
+    st.markdown("### Copy CSV (Mobile Friendly)")
+    st.markdown(f"""
+        <textarea id="csvData" style="width:100%;height:200px;">{csv}</textarea>
+        <br>
+        <button onclick="copyCSV()" 
+            style="padding: 10px 16px; background-color: #4CAF50; color: white; 
+            border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+            Copy to Clipboard
         </button>
-        """, unsafe_allow_html=True)
+        <script>
+        function copyCSV() {{
+            var copyText = document.getElementById("csvData");
+            copyText.select();
+            document.execCommand("copy");
+        }}
+        </script>
+    """, unsafe_allow_html=True)
 
 # Upload file for prediction
 uploaded_file = st.file_uploader("Upload your network log file (.csv)", type=["csv"])
