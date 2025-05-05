@@ -30,6 +30,17 @@ if st.button("Generate Synthetic Test Logs"):
     data = generate_synthetic_logs(200)
     st.write("Generated Synthetic Data:", data.head())
 
+    st.markdown("### Download Synthetic Logs")
+    csv = data.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="Download as CSV",
+        data=csv,
+        file_name='synthetic_logs.csv',
+        mime='text/csv',
+        key='download-csv'
+    )
+
+
 
 if uploaded_file:
     data = pd.read_csv(uploaded_file)
